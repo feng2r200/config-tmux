@@ -57,10 +57,15 @@ bind-key -T copy-mode-vi 'C-j' select-pane -D
 bind-key -T copy-mode-vi 'C-k' select-pane -U
 bind-key -T copy-mode-vi 'C-l' select-pane -R
 
-bind-key -n C-Left  if-shell  "$is_vim"  "send-keys C-Left"  "resize-pane -L 5"
-bind-key -n C-Right  if-shell  "$is_vim"  "send-keys C-Right"  "resize-pane -R 5"
-bind-key -n C-Up  if-shell  "$is_vim"  "send-keys C-Up"  "resize-pane -U 5"
-bind-key -n C-Down  if-shell  "$is_vim"  "send-keys C-Down"  "resize-pane -D 5"
+bind-key -n 'M-h' if-shell "$is_vim" "send-keys M-h"  "resize-pane -L 1"
+bind-key -n 'M-j' if-shell "$is_vim" "send-keys M-j"  "resize-pane -D 1"
+bind-key -n 'M-k' if-shell "$is_vim" "send-keys M-k"  "resize-pane -U 1"
+bind-key -n 'M-l' if-shell "$is_vim" "send-keys M-l"  "resize-pane -R 1"
+
+bind-key -T copy-mode-vi M-h resize-pane -L 1
+bind-key -T copy-mode-vi M-j resize-pane -D 1
+bind-key -T copy-mode-vi M-k resize-pane -U 1
+bind-key -T copy-mode-vi M-l resize-pane -R 1
 
 # }
 
