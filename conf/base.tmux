@@ -62,10 +62,10 @@ bind-key -n 'A-Down' if-shell "$is_vim" "send-keys A-Down"  "resize-pane -D 1"
 bind-key -n 'A-Up' if-shell "$is_vim" "send-keys A-Up"  "resize-pane -U 1"
 bind-key -n 'A-Right' if-shell "$is_vim" "send-keys A-Right"  "resize-pane -R 1"
 
-bind-key -T copy-mode-vi C-Left resize-pane -L 1
-bind-key -T copy-mode-vi C-Down resize-pane -D 1
-bind-key -T copy-mode-vi C-Up resize-pane -U 1
-bind-key -T copy-mode-vi C-Right resize-pane -R 1
+bind-key -T copy-mode-vi A-Left resize-pane -L 1
+bind-key -T copy-mode-vi A-Down resize-pane -D 1
+bind-key -T copy-mode-vi A-Up resize-pane -U 1
+bind-key -T copy-mode-vi A-Right resize-pane -R 1
 
 # }
 
