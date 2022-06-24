@@ -14,34 +14,40 @@ unbind-key '"'
 unbind-key %
 
 is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
-bind-key -n 'C-h' if-shell "$is_vim" 'send-keys C-h'  'select-pane -L'
-bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j'  'select-pane -D'
-bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k'  'select-pane -U'
-bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l'  'select-pane -R'
+# navigate
+bind-key -n 'C-h' if-shell "$is_vim" 'send-keys C-h' { if -F '#{pane_at_left}' '' 'select-pane -L' }
+bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j' { if -F '#{pane_at_bottom}' '' 'select-pane -D' }
+bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k' { if -F '#{pane_at_top}' '' 'select-pane -U' }
+bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l' { if -F '#{pane_at_right}' '' 'select-pane -R' }
 
-bind-key -T copy-mode-vi 'C-h' select-pane -L
-bind-key -T copy-mode-vi 'C-j' select-pane -D
-bind-key -T copy-mode-vi 'C-k' select-pane -U
-bind-key -T copy-mode-vi 'C-l' select-pane -R
+bind-key -T copy-mode-vi 'C-h' if -F '#{pane_at_left}' '' 'select-pane -L'
+bind-key -T copy-mode-vi 'C-j' if -F '#{pane_at_bottom}' '' 'select-pane -D'
+bind-key -T copy-mode-vi 'C-k' if -F '#{pane_at_top}' '' 'select-pane -U'
+bind-key -T copy-mode-vi 'C-l' if -F '#{pane_at_right}' '' 'select-pane -R'
 
-bind-key -n 'C-Left'  if-shell "$is_vim" "send-keys C-Left"  "resize-pane -L 2"
-bind-key -n 'C-Down'  if-shell "$is_vim" "send-keys C-Down"  "resize-pane -D 2"
-bind-key -n 'C-Up'    if-shell "$is_vim" "send-keys C-Up"    "resize-pane -U 2"
-bind-key -n 'C-Right' if-shell "$is_vim" "send-keys C-Right" "resize-pane -R 2"
+# resize
+bind-key -n 'M-h' if-shell "$is_vim" "send-keys M-h" "resize-pane -L 2"
+bind-key -n 'M-j' if-shell "$is_vim" "send-keys M-j" "resize-pane -D 2"
+bind-key -n 'M-k' if-shell "$is_vim" "send-keys M-k" "resize-pane -U 2"
+bind-key -n 'M-l' if-shell "$is_vim" "send-keys M-l" "resize-pane -R 2"
 
-bind-key -T copy-mode-vi C-Left  resize-pane -L 1
-bind-key -T copy-mode-vi C-Down  resize-pane -D 1
-bind-key -T copy-mode-vi C-Up    resize-pane -U 1
-bind-key -T copy-mode-vi C-Right resize-pane -R 1
+bind-key -T copy-mode-vi M-h resize-pane -L 2
+bind-key -T copy-mode-vi M-j resize-pane -D 2
+bind-key -T copy-mode-vi M-k resize-pane -U 2
+bind-key -T copy-mode-vi M-l resize-pane -R 2
 
+# copy-mode-vi
 bind-key -T copy-mode-vi v send -X begin-selection
 bind-key -T copy-mode-vi y send -X copy-selection
 bind-key -T copy-mode-vi Escape send -X cancel
 
+# join pane
 bind-key J command-prompt -p "join pane from: " "join-pane -h -s '%%'"
 
+# pop tmux
 bind-key t run-shell "~/.config/tmux/conf/scripts/popuptmux.sh"
 
+# reload
 bind-key R source-file "~/.config/tmux/tmux.conf" \; display "Reloaded!"
 
 #--------------------------------------------------------------#
