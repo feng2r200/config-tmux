@@ -41,6 +41,9 @@ bind-key -T copy-mode-vi v send -X begin-selection
 bind-key -T copy-mode-vi y send -X copy-selection
 bind-key -T copy-mode-vi Escape send -X cancel
 
+# cycle thru MRU tabs
+bind-key Tab last-window
+
 # join pane
 bind-key J command-prompt -p "join pane from: " "join-pane -h -s '%%'"
 
@@ -131,9 +134,11 @@ unbind-key -T copy-mode-vi Space
 unbind-key -T prefix /
 unbind-key -T prefix ?
 
+unbind-key -T prefix l # last-window
 unbind-key -T prefix E
 unbind-key -T prefix M-1
 unbind-key -T prefix M-2
 unbind-key -T prefix M-3
 unbind-key -T prefix M-4
 unbind-key -T prefix M-5
+
