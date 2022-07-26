@@ -21,7 +21,7 @@ set-window-option -g automatic-rename off
 set-option -g renumber-windows on
 
 set-option -g set-titles on
-set-option -g set-titles-string "#I:#W"
+set-option -g set-titles-string "#S:#I:#W"
 
 set-option -g display-panes-time 800
 
