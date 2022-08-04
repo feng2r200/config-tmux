@@ -79,7 +79,6 @@ unbind-key -T copy-mode-vi Space
 unbind-key -T prefix /
 unbind-key -T prefix ?
 
-unbind-key -T prefix l # last-window
 unbind-key -T prefix E
 unbind-key -T prefix M-1
 unbind-key -T prefix M-2
@@ -135,9 +134,6 @@ bind-key -T copy-mode-vi M-l resize-pane -R 2
 bind-key -T copy-mode-vi v send -X begin-selection
 bind-key -T copy-mode-vi y send -X copy-selection
 bind-key -T copy-mode-vi Escape send -X cancel
-
-# cycle thru MRU tabs
-bind-key Tab last-window
 
 # Kill window/session shortcuts
 bind-key X confirm-before -p "kill-window #W? (y/n)" kill-window
