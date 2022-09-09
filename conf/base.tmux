@@ -4,7 +4,7 @@
 set-option -g default-shell $SHELL
 
 set-option -s default-terminal "xterm-256color"
-set-option -as terminal-features ',xterm-256color:RGB'
+set-option -gas terminal-features ',xterm-256color:Tc'
 
 set-window-option -g xterm-keys on
 
