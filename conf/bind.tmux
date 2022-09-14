@@ -74,10 +74,18 @@ unbind-key -T copy-mode M-Down
 unbind-key -T copy-mode C-Up
 unbind-key -T copy-mode C-Down
 
-unbind-key -T copy-mode-vi Space
+unbind-key -T copy-mode-vi Space # begin-selection
 
 unbind-key -T prefix /
 unbind-key -T prefix ?
+
+unbind-key -T prefix C-z # suspend-client
+unbind-key -T prefix \# # list-buffers
+unbind-key -T prefix ( # switch-client -p
+unbind-key -T prefix ) # switch-client -n
+unbind-key -T prefix r # refresh-client
+unbind-key -T prefix DC
+unbind-key -T prefix PPage
 
 unbind-key -T prefix E
 unbind-key -T prefix M-1
@@ -88,6 +96,38 @@ unbind-key -T prefix M-5
 unbind-key -T prefix D # choose-client -Z
 unbind-key -T prefix L # switch-client -l
 unbind-key -T prefix &
+
+unbind-key -T prefix S-Up     # refresh-client -U 10
+unbind-key -T prefix S-Down   # refresh-client -D 10
+unbind-key -T prefix S-Left   # refresh-client -L 10
+unbind-key -T prefix S-Right  # refresh-client -R 10
+
+unbind-key -T prefix M-n      # next-window -a
+unbind-key -T prefix M-o      # rotate-window -D
+unbind-key -T prefix M-p      # previous-window -a
+unbind-key -T prefix M-Up     # resize-pane -U 5
+unbind-key -T prefix M-Down   # resize-pane -D 5
+unbind-key -T prefix M-Left   # resize-pane -L 5
+unbind-key -T prefix M-Right  # resize-pane -R 5
+unbind-key -T prefix C-Up     # resize-pane -U
+unbind-key -T prefix C-Down   # resize-pane -D
+unbind-key -T prefix C-Left   # resize-pane -L
+unbind-key -T prefix C-Right  # resize-pane -R
+
+unbind-key -T root MouseDown1Pane
+unbind-key -T root MouseDown1Status
+unbind-key -T root MouseDown2Pane
+unbind-key -T root MouseDown3Pane
+unbind-key -T root MouseDown3Status
+unbind-key -T root MouseDown3StatusLeft
+unbind-key -T root MouseDrag1Pane
+unbind-key -T root MouseDrag1Border
+unbind-key -T root WheelUpPane
+unbind-key -T root WheelUpStatus
+unbind-key -T root WheelDownStatus
+unbind-key -T root DoubleClick1Pane
+unbind-key -T root TripleClick1Pane
+unbind-key -T root M-MouseDown3Pane
 
 #--------------------------------------------------------------#
 ##          Key Bind                                          ##
