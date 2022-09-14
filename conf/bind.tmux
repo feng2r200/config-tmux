@@ -93,9 +93,9 @@ unbind-key -T prefix &
 ##          Key Bind                                          ##
 #--------------------------------------------------------------#
 
-set -g prefix M-a
+set -g prefix C-a
 unbind C-b
-# bind-key C-a send-prefix
+bind-key C-a send-prefix
 
 bind-key C-l send-keys 'C-l' \; run 'sleep 0.1' \; clear-history
 
