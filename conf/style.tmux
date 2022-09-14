@@ -36,14 +36,14 @@ color_window_off_status_current_bg="colour254"
 set -g mode-style "fg=default,bg=$color_main"
 
 # command line style
-set -g message-style "fg=$color_main,bg=$color_dark"
+set -g message-style "fg=$color_blue,bg=$color_dark"
 
 # status line style
 set -g status-style "fg=$color_status_text,bg=$color_dark"
 
 # window segments in status line
 set -g window-status-separator ""
-separator_powerline_right=""
+separator_powerline_right=""
 
 setw -g window-status-format " #I:#W "
 setw -g window-status-current-style "fg=$color_light,bold,bg=$color_main"
@@ -53,7 +53,7 @@ setw -g window-status-current-format "#[fg=$color_dark,bg=$color_main]$separator
 setw -g window-status-activity-style "fg=$color_main"
 
 # outline for active pane
-setw -g pane-active-border-style "fg=$color_main"
+setw -g pane-active-border-style "fg=$color_green"
 
 # general status bar settings
 set -g status-position top
