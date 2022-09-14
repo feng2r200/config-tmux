@@ -196,8 +196,8 @@ bind-key D if -F '#{session_many_attached}' \
     'display "Session has only 1 client attached"'
 
 # pop tmux
-bind-key t run-shell "~/.config/tmux/conf/scripts/popuptmux.sh"
+bind-key t run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/popuptmux.sh"
 
 # reload
-bind-key R source-file "~/.config/tmux/tmux.conf" \; display "Reloaded!"
+bind-key R source-file "$XDG_CONFIG_HOME/tmux/tmux.conf" \; display "Reloaded!"
 
