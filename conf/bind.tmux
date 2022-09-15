@@ -79,6 +79,12 @@ unbind-key -T copy-mode-vi Space # begin-selection
 unbind-key -T prefix /
 unbind-key -T prefix ?
 
+unbind-key -T prefix n # next-window
+unbind-key -T prefix p # previous-window
+unbind-key -T prefix m # select-pane -m
+unbind-key -T prefix M # select-pane -M
+unbind-key -T prefix q # display-panes
+
 unbind-key -T prefix C-z # suspend-client
 unbind-key -T prefix \# # list-buffers
 unbind-key -T prefix ( # switch-client -p
@@ -144,6 +150,9 @@ bind-key - split-window -v -c "#{pane_current_path}"
 unbind-key '"'
 unbind-key %
 
+bind-key -T prefix C-n next-window
+bind-key -T prefix C-p previous-window
+
 # Prompt to rename window right after it's created
 set-hook -g after-new-window 'command-prompt -I "#{window_name}" "rename-window '%%'"'
 
@@ -181,6 +190,14 @@ bind-key Q confirm-before -p "kill other windows? (y/n)" "kill-window -a"
 
 # Link window
 bind-key L command-prompt -p "Link window from (session:window): " "link-window -s %% -a"
+
+# A key to toggle between smallest and largest sizes if a window is visible in
+# multiple places
+bind F set -w window-size
+
+# Keys to toggle monitoring activity in a window and the synchronize-panes option
+bind M set monitor-activity
+bind Y set synchronize-panes\; display 'synchronize-panes #{?synchronize-panes,on,off}'
 
 # join pane
 bind-key j command-prompt -p "join pane from: " "join-pane -h -s '%%'"
