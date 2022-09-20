@@ -26,17 +26,6 @@ bind-key -T copy-mode-vi 'C-j' if -F '#{pane_at_bottom}' '' 'select-pane -D'
 bind-key -T copy-mode-vi 'C-k' if -F '#{pane_at_top}' '' 'select-pane -U'
 bind-key -T copy-mode-vi 'C-l' if -F '#{pane_at_right}' '' 'select-pane -R'
 
-# resize
-bind-key -n 'M-h' if-shell "$is_vim" "send-keys M-h" "resize-pane -L 2"
-bind-key -n 'M-j' if-shell "$is_vim" "send-keys M-j" "resize-pane -D 2"
-bind-key -n 'M-k' if-shell "$is_vim" "send-keys M-k" "resize-pane -U 2"
-bind-key -n 'M-l' if-shell "$is_vim" "send-keys M-l" "resize-pane -R 2"
-
-bind-key -T copy-mode-vi M-h resize-pane -L 2
-bind-key -T copy-mode-vi M-j resize-pane -D 2
-bind-key -T copy-mode-vi M-k resize-pane -U 2
-bind-key -T copy-mode-vi M-l resize-pane -R 2
-
 # copy-mode-vi
 bind-key -T copy-mode-vi v send -X begin-selection
 bind-key -T copy-mode-vi y send -X copy-selection
@@ -66,13 +55,21 @@ bind-key j command-prompt -p "join pane from: " "join-pane -h -s '%%'"
 bind-key J command-prompt -p "Session to merge with: " \
    "run-shell 'yes | head -n #{session_windows} | xargs -I {} -n 1 tmux movew -t %%'"
 
-bind-key D if -F '#{session_many_attached}' \
-    'confirm-before -p "Detach other clients? (y/n)" "detach -a"' \
-    'display "Session has only 1 client attached"'
-
 # pop tmux
 bind-key t run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/popuptmux.sh"
 
 # reload
 bind-key R source-file "$XDG_CONFIG_HOME/tmux/tmux.conf" \; display "Reloaded!"
+
+###
+# key-table
+###
+
+bind-key Z switch-client -T RESIZE
+
+# resize
+bind-key -T RESIZE 'h' if-shell "$is_vim" "send-keys M-h" "resize-pane -L 2" \; switch-client -T RESIZE
+bind-key -T RESIZE 'j' if-shell "$is_vim" "send-keys M-j" "resize-pane -D 2" \; switch-client -T RESIZE
+bind-key -T RESIZE 'k' if-shell "$is_vim" "send-keys M-k" "resize-pane -U 2" \; switch-client -T RESIZE
+bind-key -T RESIZE 'l' if-shell "$is_vim" "send-keys M-l" "resize-pane -R 2" \; switch-client -T RESIZE
 
