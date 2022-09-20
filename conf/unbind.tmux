@@ -29,17 +29,6 @@ unbind-key -T prefix M-3
 unbind-key -T prefix M-4
 unbind-key -T prefix M-5
 
-unbind-key -T prefix 0 # select-window -t :=0
-unbind-key -T prefix 1 # select-window -t :=1
-unbind-key -T prefix 2 # select-window -t :=2
-unbind-key -T prefix 3 # select-window -t :=3
-unbind-key -T prefix 4 # select-window -t :=4
-unbind-key -T prefix 5 # select-window -t :=5
-unbind-key -T prefix 6 # select-window -t :=6
-unbind-key -T prefix 7 # select-window -t :=7
-unbind-key -T prefix 8 # select-window -t :=8
-unbind-key -T prefix 9 # select-window -t :=9
-
 unbind-key -T prefix S-Up     # refresh-client -U 10
 unbind-key -T prefix S-Down   # refresh-client -D 10
 unbind-key -T prefix S-Left   # refresh-client -L 10
