@@ -14,6 +14,9 @@ bind-key -T ACTION 'l' if-shell "$is_vim" "send-keys M-l" "resize-pane -R 2" \; 
 bind-key -T ACTION 'n' swap-window -t :+1 \; switch-client -T ACTION
 bind-key -T ACTION 'p' swap-window -t :-1 \; switch-client -T ACTION
 
+# largest window size
+bind-key -T ACTION 'f' set -w window-size largest
+
 # Keys to toggle the synchronize-panes option
 bind-key -T ACTION 'y' set synchronize-panes\; display 'synchronize-panes #{?synchronize-panes,on,off}'
 
