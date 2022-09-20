@@ -1,22 +1,28 @@
 #--------------------------------------------------------------#
 ##          UnBind                                            ##
 #--------------------------------------------------------------#
-unbind-key -T prefix /
-unbind-key -T prefix ?
+unbind-key -T prefix /   # command-prompt -k -p key { list-keys -1N "%%" }
+unbind-key -T prefix ?   # list-keys -N
 
-unbind-key -T prefix m # select-pane -m
-unbind-key -T prefix M # select-pane -M
-unbind-key -T prefix q # display-panes
+unbind-key -T prefix q   # display-panes
 
 unbind-key -T prefix C-o # rotate-window
 unbind-key -T prefix C-z # suspend-client
-unbind-key -T prefix \# # list-buffers
+unbind-key -T prefix \#  # list-buffers
+unbind-key -T prefix .   # command-prompt -T target { move-window -t "%%" }
 unbind-key -T prefix DC
 unbind-key -T prefix PPage
 unbind-key -T prefix <
 unbind-key -T prefix >
 
-unbind-key -T prefix E    # select-layout -E
+unbind-key -T prefix & # confirm-before -p "kill-window #W? (y/n)" kill-window
+unbind-key -T prefix C # customize-mode -Z
+unbind-key -T prefix D # choose-client -Z
+unbind-key -T prefix E # select-layout -E
+unbind-key -T prefix w # choose-tree -Zw
+unbind-key -T prefix i # display-message
+unbind-key -T prefix o # select-pane -t :.+
+unbind-key -T prefix r # refresh-client
 unbind-key -T prefix M-1
 unbind-key -T prefix M-2
 unbind-key -T prefix M-3
