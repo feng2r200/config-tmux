@@ -2,34 +2,32 @@
 ##          Key Bind                                          ##
 #--------------------------------------------------------------#
 
-set -g prefix C-a
-unbind C-b
-bind-key C-a send-prefix
-
-bind-key C-l send-keys 'C-l' \; run 'sleep 0.1' \; clear-history
-
-bind-key \\ split-window -h -c "#{pane_current_path}"
-bind-key - split-window -v -c "#{pane_current_path}"
-
 # Prompt to rename window right after it's created
 set-hook -g after-new-window 'command-prompt -I "#{window_name}" "rename-window '%%'"'
 
-is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
+# prefix-key
+set -g prefix C-a
+unbind C-b
+
+# send-prefix
+bind-key C-a send-prefix
+
+# clear-history
+bind-key C-l send-keys 'C-l' \; run 'sleep 0.1' \; clear-history
+
+# split pane
+bind-key \\ split-window -h -c "#{pane_current_path}"
+bind-key - split-window -v -c "#{pane_current_path}"
+
 # navigate
+is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
 bind-key -n 'C-h' if-shell "$is_vim" 'send-keys C-h' { if -F '#{pane_at_left}' '' 'select-pane -L' }
 bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j' { if -F '#{pane_at_bottom}' '' 'select-pane -D' }
 bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k' { if -F '#{pane_at_top}' '' 'select-pane -U' }
 bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l' { if -F '#{pane_at_right}' '' 'select-pane -R' }
 
-bind-key -T copy-mode-vi 'C-h' if -F '#{pane_at_left}' '' 'select-pane -L'
-bind-key -T copy-mode-vi 'C-j' if -F '#{pane_at_bottom}' '' 'select-pane -D'
-bind-key -T copy-mode-vi 'C-k' if -F '#{pane_at_top}' '' 'select-pane -U'
-bind-key -T copy-mode-vi 'C-l' if -F '#{pane_at_right}' '' 'select-pane -R'
-
 # copy-mode-vi
-bind-key -T copy-mode-vi v send -X begin-selection
-bind-key -T copy-mode-vi y send -X copy-selection
-bind-key -T copy-mode-vi Escape send -X cancel
+source-file "$XDG_CONFIG_HOME/tmux/conf/keytable/copymodevi.tmux"
 
 # Kill window/session shortcuts
 bind-key X confirm-before -p "kill-window #W? (y/n)" kill-window
@@ -42,8 +40,7 @@ bind-key W command-prompt -p "Link window from (session:window): " "link-window 
 # multiple places
 bind F set -w window-size
 
-# Keys to toggle monitoring activity in a window and the synchronize-panes option
-bind M set monitor-activity
+# Keys to toggle the synchronize-panes option
 bind Y set synchronize-panes\; display 'synchronize-panes #{?synchronize-panes,on,off}'
 
 # join pane
@@ -53,7 +50,7 @@ bind-key j command-prompt -p "join pane from: " "join-pane -h -s '%%'"
 # but don't want to create a lot of small unnamed 1-window sessions around
 # move all windows from current session to main named one (dev, work, etc)
 bind-key J command-prompt -p "Session to merge with: " \
-   "run-shell 'yes | head -n #{session_windows} | xargs -I {} -n 1 tmux movew -t %%'"
+   "run-shell 'yes | head -n #{session_windows} | xargs -I {} -n 1 tmux move-window -t %%'"
 
 # pop tmux
 bind-key t run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/popuptmux.sh"
@@ -61,15 +58,9 @@ bind-key t run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/popuptmux.sh"
 # reload
 bind-key R source-file "$XDG_CONFIG_HOME/tmux/tmux.conf" \; display "Reloaded!"
 
-###
-# key-table
-###
-
+# RESIZE
 bind-key Z switch-client -T RESIZE
+source-file "$XDG_CONFIG_HOME/tmux/conf/keytable/resize.tmux"
 
-# resize
-bind-key -T RESIZE 'h' if-shell "$is_vim" "send-keys M-h" "resize-pane -L 2" \; switch-client -T RESIZE
-bind-key -T RESIZE 'j' if-shell "$is_vim" "send-keys M-j" "resize-pane -D 2" \; switch-client -T RESIZE
-bind-key -T RESIZE 'k' if-shell "$is_vim" "send-keys M-k" "resize-pane -U 2" \; switch-client -T RESIZE
-bind-key -T RESIZE 'l' if-shell "$is_vim" "send-keys M-l" "resize-pane -R 2" \; switch-client -T RESIZE
-
+# MENU
+source-file "$XDG_CONFIG_HOME/tmux/conf/keytable/menu.tmux"
