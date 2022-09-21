@@ -25,7 +25,7 @@ set-option -g set-titles-string "#S:#I:#W"
 
 set-option -g display-panes-time 800
 
-set-option -g mouse off
+set-option -g mouse on
 set-option -g status-keys emacs
 set-option -g mode-keys vi
 

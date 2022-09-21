@@ -53,19 +53,6 @@ unbind-key -T prefix C-Down   # resize-pane -D
 unbind-key -T prefix C-Left   # resize-pane -L
 unbind-key -T prefix C-Right  # resize-pane -R
 
-unbind-key -T root MouseDown1Pane
-unbind-key -T root MouseDown1Status
-unbind-key -T root MouseDown2Pane
-unbind-key -T root MouseDown3Pane
-unbind-key -T root MouseDown3Status
-unbind-key -T root MouseDown3StatusLeft
-unbind-key -T root MouseDrag1Pane
-unbind-key -T root MouseDrag1Border
-unbind-key -T root WheelUpPane
-unbind-key -T root WheelUpStatus
-unbind-key -T root WheelDownStatus
-unbind-key -T root DoubleClick1Pane
-unbind-key -T root TripleClick1Pane
 unbind-key -T root M-MouseDown3Pane
 
 unbind-key '"'
@@ -101,13 +88,6 @@ unbind-key -T copy-mode n
 unbind-key -T copy-mode q
 unbind-key -T copy-mode r
 unbind-key -T copy-mode t
-unbind-key -T copy-mode MouseDown1Pane
-unbind-key -T copy-mode MouseDrag1Pane
-unbind-key -T copy-mode MouseDragEnd1Pane
-unbind-key -T copy-mode WheelUpPane
-unbind-key -T copy-mode WheelDownPane
-unbind-key -T copy-mode DoubleClick1Pane
-unbind-key -T copy-mode TripleClick1Pane
 unbind-key -T copy-mode Home
 unbind-key -T copy-mode End
 unbind-key -T copy-mode NPage
@@ -146,10 +126,3 @@ unbind-key -T copy-mode C-Down
 
 unbind-key -T copy-mode-vi Space # begin-selection
 
-unbind-key -T copy-mode-vi MouseDown1Pane    # select-pane
-unbind-key -T copy-mode-vi MouseDrag1Pane    # select-pane \; send-keys -X begin-selection
-unbind-key -T copy-mode-vi MouseDragEnd1Pane # send-keys -X copy-pipe-and-cancel
-unbind-key -T copy-mode-vi WheelUpPane       # select-pane \; send-keys -X -N 5 scroll-up
-unbind-key -T copy-mode-vi WheelDownPane     # select-pane \; send-keys -X -N 5 scroll-down
-unbind-key -T copy-mode-vi DoubleClick1Pane  # select-pane \; send-keys -X select-word \; run-shell -d 0.3 \; send-keys -X copy-pipe-and-cancel
-unbind-key -T copy-mode-vi TripleClick1Pane  # select-pane \; send-keys -X select-line \; run-shell -d 0.3 \; send-keys -X copy-pipe-and-cancel
