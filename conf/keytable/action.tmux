@@ -5,10 +5,10 @@
 # resize
 is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
 
-bind-key -T ACTION 'h' if-shell "$is_vim" "send-keys M-h" "resize-pane -L 2" \; switch-client -T ACTION
-bind-key -T ACTION 'j' if-shell "$is_vim" "send-keys M-j" "resize-pane -D 2" \; switch-client -T ACTION
-bind-key -T ACTION 'k' if-shell "$is_vim" "send-keys M-k" "resize-pane -U 2" \; switch-client -T ACTION
-bind-key -T ACTION 'l' if-shell "$is_vim" "send-keys M-l" "resize-pane -R 2" \; switch-client -T ACTION
+bind-key -T ACTION 'h' if-shell "$is_vim" "send-keys C-w <" "resize-pane -L 2" \; switch-client -T ACTION
+bind-key -T ACTION 'j' if-shell "$is_vim" "send-keys C-w -" "resize-pane -D 2" \; switch-client -T ACTION
+bind-key -T ACTION 'k' if-shell "$is_vim" "send-keys C-w +" "resize-pane -U 2" \; switch-client -T ACTION
+bind-key -T ACTION 'l' if-shell "$is_vim" "send-keys C-w >" "resize-pane -R 2" \; switch-client -T ACTION
 
 # swap window
 bind-key -T ACTION 'n' swap-window -t :+1 \; switch-client -T ACTION
