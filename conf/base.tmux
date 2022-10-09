@@ -3,8 +3,8 @@
 #--------------------------------------------------------------#
 set-option -g default-shell $SHELL
 
-set-option -s default-terminal "xterm-256color"
-set-option -gas terminal-features ',xterm-256color:Tc'
+set-option -s default-terminal "alacritty"
+# set-option -gas terminal-features ',xterm-256color:Tc'
 
 set-option -wg xterm-keys on
 
