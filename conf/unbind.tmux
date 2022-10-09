@@ -19,8 +19,10 @@ unbind-key -T prefix & # confirm-before -p "kill-window #W? (y/n)" kill-window
 unbind-key -T prefix C # customize-mode -Z
 unbind-key -T prefix D # choose-client -Z
 unbind-key -T prefix E # select-layout -E
+unbind-key -T prefix M # select-pane -M
 unbind-key -T prefix w # choose-tree -Zw
 unbind-key -T prefix i # display-message
+unbind-key -T prefix m # select-pane -m
 unbind-key -T prefix o # select-pane -t :.+
 unbind-key -T prefix r # refresh-client
 unbind-key -T prefix M-1
