@@ -26,6 +26,11 @@ bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j' { if -F '#{pane_at_bottom}'
 bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k' { if -F '#{pane_at_top}' '' 'select-pane -U' }
 bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l' { if -F '#{pane_at_right}' '' 'select-pane -R' }
 
+bind-key -n 'M-h' if-shell "$is_vim" "send-keys M-h" "resize-pane -L 2"
+bind-key -n 'M-j' if-shell "$is_vim" "send-keys M-j" "resize-pane -D 2"
+bind-key -n 'M-k' if-shell "$is_vim" "send-keys M-k" "resize-pane -U 2"
+bind-key -n 'M-l' if-shell "$is_vim" "send-keys M-l" "resize-pane -R 2"
+
 # copy-mode-vi
 source-file "$XDG_CONFIG_HOME/tmux/conf/keytable/copymodevi.tmux"
 
@@ -33,9 +38,6 @@ source-file "$XDG_CONFIG_HOME/tmux/conf/keytable/copymodevi.tmux"
 bind-key q confirm-before -p "kill other panes? (y/n)" "kill-pane -a"
 bind-key X confirm-before -p "kill-window #W? (y/n)" kill-window
 bind-key Q confirm-before -p "kill other windows? (y/n)" "kill-window -a"
-
-# join pane
-bind-key j command-prompt -p "join pane from: " "join-pane -h -s '%%'"
 
 # pop tmux
 bind-key t run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/popuptmux.sh"
