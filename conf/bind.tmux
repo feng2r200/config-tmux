@@ -51,4 +51,4 @@ bind-key -T prefix s choose-tree -Zw
 bind-key -T prefix S choose-tree -Zs
 
 # start_of_ranger_tmux_config
-bind-key Bspace run-shell -b '/usr/local/opt/python@3.10/bin/python3.10 -m ranger_tmux.drop'
+bind-key Bspace run-shell '/usr/local/bin/python3 -m ranger_tmux.drop'
