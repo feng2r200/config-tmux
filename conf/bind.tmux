@@ -50,5 +50,3 @@ source-file "$XDG_CONFIG_HOME/tmux/conf/keytable/action.tmux"
 bind-key -T prefix s choose-tree -Zw
 bind-key -T prefix S choose-tree -Zs
 
-# start_of_ranger_tmux_config
-bind-key Bspace run-shell '/usr/local/bin/python3 -m ranger_tmux.drop'
