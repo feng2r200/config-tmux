@@ -6,14 +6,14 @@
 bind-key -T ACTION '>' swap-window -d -t :+1 \; switch-client -T ACTION
 bind-key -T ACTION '<' swap-window -d -t :-1 \; switch-client -T ACTION
 
-# join pane
-bind-key -T ACTION j command-prompt -p "join pane from: " "join-pane -h -s '%%'"
-
 # largest window size
 bind-key -T ACTION 'f' set -w window-size largest
 
 # Keys to toggle the synchronize-panes option
 bind-key -T ACTION 'y' set synchronize-panes\; display 'synchronize-panes #{?synchronize-panes,on,off}'
+
+# join pane
+bind-key -T ACTION j command-prompt -p "join pane from: " "join-pane -h -s '%%'"
 
 # Merge session with another one (e.g. move all windows)
 # If you use adhoc 1-window sessions, and you want to preserve session upon exit

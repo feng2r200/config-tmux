@@ -50,3 +50,11 @@ source-file "$XDG_CONFIG_HOME/tmux/conf/keytable/action.tmux"
 bind-key -T prefix s choose-tree -Zw
 bind-key -T prefix S choose-tree -Zs
 
+bind-key -T prefix \; last-window
+
+bind-key -T prefix j next-window
+bind-key -T prefix k previous-window
+
+bind-key -T prefix h switch-client -p
+bind-key -T prefix l switch-client -n
+

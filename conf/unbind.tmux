@@ -25,6 +25,14 @@ unbind-key -T prefix i # display-message
 unbind-key -T prefix m # select-pane -m
 unbind-key -T prefix o # select-pane -t :.+
 unbind-key -T prefix r # refresh-client
+unbind-key -T prefix n # next-window
+unbind-key -T prefix p # previous-window
+unbind-key -T prefix ( # switch-client -p
+unbind-key -T prefix ) # switch-client -n
+
+unbind-key -T prefix \$ # command-prompt -I "#S" { rename-session "%%" }
+unbind-key -T prefix ,  # command-prompt -I "#W" { rename-window "%%" }
+
 unbind-key -T prefix M-1
 unbind-key -T prefix M-2
 unbind-key -T prefix M-3
