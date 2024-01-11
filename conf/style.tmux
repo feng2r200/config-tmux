@@ -67,5 +67,6 @@ key_table="#[fg=$color_dark,bg=$color_yellow]#{s/root//:client_key_table}#[defau
 wg_is_zoomed="#[fg=$color_dark,bg=$color_secondary]#{?window_zoomed_flag,[Z],}#[default]"
 
 set -g status-left "$wg_session"
-set -g status-right "$wg_is_zoomed $key_table $wg_date"
+# set -g status-right "$wg_is_zoomed $key_table $wg_date"
+set -g status-right "$wg_is_zoomed $key_table"
 
