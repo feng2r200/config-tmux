@@ -57,7 +57,7 @@ setw -g pane-active-border-style "fg=$color_green"
 
 # general status bar settings
 set -g status-position top
-set -g status-justify left
+set -g status-justify centre
 set -g status-right-length 100
 
 # status bar config
