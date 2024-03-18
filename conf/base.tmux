@@ -34,7 +34,7 @@ set-option -g clock-mode-style 24
 
 set-option -g history-limit 50000
 set-option -s escape-time 0
-set-option -s editor "/usr/local/bin/nvim"
+set-option -s editor "/opt/homebrew/bin/nvim"
 set-option -s history-file "$XDG_CACHE_HOME/tmux/history"
 set-option -g status-interval 5
 set-option -g visual-activity off
