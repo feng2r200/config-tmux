@@ -62,11 +62,10 @@ set -g status-right-length 100
 
 # status bar config
 wg_session="#[fg=$color_session_text] #S #[default]"
-wg_date="#[fg=$color_secondary]%h %d %H:%M#[default]"
+wg_date="#[fg=$color_secondary]%H:%M %a %y-%m-%d#[default]"
 key_table="#[fg=$color_dark,bg=$color_yellow]#{s/root//:client_key_table}#[default]"
 wg_is_zoomed="#[fg=$color_dark,bg=$color_secondary]#{?window_zoomed_flag,[Z],}#[default]"
 
 set -g status-left "$wg_session"
-# set -g status-right "$wg_is_zoomed $key_table $wg_date"
-set -g status-right "$wg_is_zoomed $key_table"
+set -g status-right "$wg_is_zoomed $key_table $wg_date"
 
