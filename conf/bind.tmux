@@ -3,7 +3,7 @@
 #--------------------------------------------------------------#
 
 # Prompt to rename window right after it's created
-set-hook -g after-new-window 'command-prompt -I "#{window_name}" "rename-window '%%'"'
+# set-hook -g after-new-window 'command-prompt -I "#{window_name}" "rename-window '%%'"'
 
 # prefix-key
 set -g prefix C-a
