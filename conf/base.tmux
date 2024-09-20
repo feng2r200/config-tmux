@@ -3,8 +3,8 @@
 #--------------------------------------------------------------#
 set-option -g default-shell $SHELL
 
-set-option -s default-terminal "xterm-256color"
-# set-option -gas terminal-features ',xterm-256color:Tc'
+set-option -g default-terminal "tmux-256color"
+set-option -ag terminal-overrides ',xterm-256color:RGB'
 
 set-option -wg xterm-keys on
 
@@ -42,6 +42,8 @@ set-option -g visual-bell off
 set-option -g visual-silence on
 set-option -g synchronize-panes off
 set-option -g focus-events on
+
+set -gq allow-passthrough on
 
 set-option -g word-separators " -_()@,[]{}:=/"
 
