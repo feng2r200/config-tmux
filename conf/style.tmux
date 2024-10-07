@@ -33,6 +33,8 @@ color_window_off_status_current_bg="colour254"
 ##          Appearence and status bar                          #
 #--------------------------------------------------------------#
 
+set -g status off
+
 set -g mode-style "fg=default,bg=$color_main"
 
 # command line style
@@ -57,7 +59,8 @@ setw -g pane-active-border-style "fg=$color_green"
 
 # general status bar settings
 set -g status-position top
-set -g status-justify centre
+# set -g status-justify centre
+set -g status-justify right
 set -g status-right-length 100
 
 # status bar config
@@ -67,5 +70,5 @@ key_table="#[fg=$color_dark,bg=$color_yellow]#{s/root//:client_key_table}#[defau
 wg_is_zoomed="#[fg=$color_dark,bg=$color_secondary]#{?window_zoomed_flag,[Z],}#[default]"
 
 set -g status-left "$wg_session"
-set -g status-right "$wg_is_zoomed $key_table $wg_date"
+set -g status-right "$wg_is_zoomed $key_table"
 

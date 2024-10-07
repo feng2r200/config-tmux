@@ -29,6 +29,7 @@ unbind-key -T prefix 8   # select-window -t :=8
 unbind-key -T prefix 9   # select-window -t :=9
 
 unbind-key -T prefix & # confirm-before -p "kill-window #W? (y/n)" kill-window
+unbind-key -T prefix f # command-prompt { find-window -Z "%%" }
 unbind-key -T prefix C # customize-mode -Z
 unbind-key -T prefix D # choose-client -Z
 unbind-key -T prefix E # select-layout -E
