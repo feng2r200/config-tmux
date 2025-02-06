@@ -33,7 +33,7 @@ color_window_off_status_current_bg="colour254"
 ##          Appearence and status bar                          #
 #--------------------------------------------------------------#
 
-set -g status off
+set -g status on
 
 set -g mode-style "fg=default,bg=$color_main"
 
@@ -58,7 +58,7 @@ setw -g window-status-activity-style "fg=$color_main"
 setw -g pane-active-border-style "fg=$color_green"
 
 # general status bar settings
-set -g status-position top
+set -g status-position bottom
 # set -g status-justify centre
 set -g status-justify right
 set -g status-right-length 100
