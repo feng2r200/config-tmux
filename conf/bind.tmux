@@ -192,6 +192,7 @@ bind-key Q confirm-before -p "kill other windows? (y/n)" "kill-window -a"
 
 # pop tmux
 bind-key t run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/popuptmux.sh"
+bind-key '-' run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/popuptmux.sh"
 
 # ACTION
 bind-key A switch-client -T ACTION
