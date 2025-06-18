@@ -3,7 +3,7 @@
 #--------------------------------------------------------------#
 set-option -g default-shell $SHELL
 
-set-option -g default-terminal "tmux-256color"
+set-option -g default-terminal "xterm-256color"
 # set-option -ag terminal-overrides ',xterm-256color:RGB'
 set-option -ag terminal-overrides ',*:RGB'
 
