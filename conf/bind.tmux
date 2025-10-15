@@ -177,10 +177,14 @@ bind-key -n 'C-j' if-shell "$is_vim" 'send-keys C-j' { if -F '#{pane_at_bottom}'
 bind-key -n 'C-k' if-shell "$is_vim" 'send-keys C-k' { if -F '#{pane_at_top}'    '' 'select-pane -U' }
 bind-key -n 'C-l' if-shell "$is_vim" 'send-keys C-l' { if -F '#{pane_at_right}'  '' 'select-pane -R' }
 
-bind-key -n 'C-Up'    if-shell "$is_vim" "send-keys C-Up"     "resize-pane -U 5"
-bind-key -n 'C-Down'  if-shell "$is_vim" "send-keys C-Down"   "resize-pane -D 5"
-bind-key -n 'C-Left'  if-shell "$is_vim" "send-keys C-Left"   "resize-pane -L 5"
-bind-key -n 'C-Right' if-shell "$is_vim" "send-keys C-Right"  "resize-pane -R 5"
+# bind-key -n 'C-Up'    if-shell "$is_vim" "send-keys C-Up"     "resize-pane -U 5"
+# bind-key -n 'C-Down'  if-shell "$is_vim" "send-keys C-Down"   "resize-pane -D 5"
+# bind-key -n 'C-Left'  if-shell "$is_vim" "send-keys C-Left"   "resize-pane -L 5"
+# bind-key -n 'C-Right' if-shell "$is_vim" "send-keys C-Right"  "resize-pane -R 5"
+bind-key -n C-Up    if-shell -F '#{||:#{==:#{pane_current_command},vim},#{==:#{pane_current_command},nvim}}' 'send-keys C-Up'    'resize-pane -U 5'
+bind-key -n C-Down  if-shell -F '#{||:#{==:#{pane_current_command},vim},#{==:#{pane_current_command},nvim}}' 'send-keys C-Down'  'resize-pane -D 5'
+bind-key -n C-Left  if-shell -F '#{||:#{==:#{pane_current_command},vim},#{==:#{pane_current_command},nvim}}' 'send-keys C-Left'  'resize-pane -L 5'
+bind-key -n C-Right if-shell -F '#{||:#{==:#{pane_current_command},vim},#{==:#{pane_current_command},nvim}}' 'send-keys C-Right' 'resize-pane -R 5'
 
 # copy-mode-vi
 source-file "$XDG_CONFIG_HOME/tmux/conf/keytable/copymodevi.tmux"
