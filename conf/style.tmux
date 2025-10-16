@@ -55,7 +55,7 @@ setw -g window-status-current-format "#[fg=$color_dark,bg=$color_main]$separator
 setw -g window-status-activity-style "fg=$color_main"
 
 # outline for active pane
-setw -g pane-active-border-style "fg=$color_green"
+setw -g pane-active-border-style "fg=$color_red"
 
 # general status bar settings
 set -g status-position bottom
