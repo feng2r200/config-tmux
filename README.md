@@ -112,6 +112,7 @@
 | prefix       | c      | new-window |
 | prefix       | d      | detach-client |
 | prefix       | f      | command-prompt { find-window -Z "%%" } |
+| prefix       | g      | fzf 选择 pane 并移动到当前 window（默认 -h 右侧分屏） |
 | prefix       | j      | command-prompt -p "join pane from: " "join-pane -h -s '%%'" |
 | prefix       | l      | last-window |
 | prefix       | m      | select-pane -m |
@@ -128,4 +129,3 @@
 | root         | C-j    | move to down pane (even if vim or tmux) |
 | root         | C-k    | move to up pane (even if vim or tmux) |
 | root         | C-l    | move to right pane (even if vim or tmux) |
-

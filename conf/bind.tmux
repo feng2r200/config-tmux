@@ -195,6 +195,9 @@ bind-key Q confirm-before -p "kill other windows? (y/n)" "kill-window -a"
 bind-key t run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/popuptmux.sh"
 bind-key '-' run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/popuptmux.sh"
 
+# pane picker (fzf popup)
+bind-key g run-shell "$XDG_CONFIG_HOME/tmux/conf/scripts/pane-tree-fzf.sh"
+
 # ACTION
 bind-key A switch-client -T ACTION
 source-file "$XDG_CONFIG_HOME/tmux/conf/keytable/action.tmux"
@@ -206,4 +209,3 @@ bind-key -T prefix k previous-window
 
 bind-key -T prefix h switch-client -p
 bind-key -T prefix l switch-client -n
-
