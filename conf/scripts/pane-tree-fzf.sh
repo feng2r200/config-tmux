@@ -54,9 +54,14 @@ inside_popup() {
   [[ -n "$dst_pane" && -n "$dst_win" ]] || die "missing TMUX_PANE_PICKER_DST_* env"
   [[ -n "$dst_sess" ]] || dst_sess="$(tmux display-message -p -t "$dst_pane" "#{session_id}")"
 
+  local cursor_file
+  cursor_file="$(mktemp -t tmux-pane-picker.cursor.XXXXXX)"
+  rm -f -- "$cursor_file" 2>/dev/null || true
+
   local resolve_join_target_pane
   resolve_join_target_pane() {
-    tmux list-panes -t "$dst_win" -F "#{pane_id}|#{pane_left}|#{pane_top}|#{pane_width}|#{pane_height}" 2>/dev/null \
+    local win_id=${1:?window_id required}
+    tmux list-panes -t "$win_id" -F "#{pane_id}|#{pane_left}|#{pane_top}|#{pane_width}|#{pane_height}" 2>/dev/null \
       | awk -F '|' '
           BEGIN { best=""; best_b=-1; best_r=-1 }
           {
@@ -84,7 +89,8 @@ inside_popup() {
     preview_window="${preview_window},nowrap"
   fi
 
-  local out key chosen typ id _
+  local out action_line
+  local fzf_status=0
   out="$(
     tmux list-panes -a -F "#{pane_id}|#{pane_active}|#{session_name}|#{window_id}|#{window_index}|#{window_name}|#{window_linked}|#{pane_index}|#{pane_title}|#{pane_current_command}|#{pane_current_path}" \
       | awk -F '|' -v dst_pane="$dst_pane" -v dst_win="$dst_win" '
@@ -105,31 +111,120 @@ inside_popup() {
         ' \
       | sort -t '|' -k1,1n -k5,5 -k6,6n -k7,7n \
       | awk -F '|' 'BEGIN { OFS="|" } { print $2, $3, $4 }' \
-      | fzf --height=100% --no-multi --delimiter='|' --with-nth=3 \
+      | fzf --height=100% --multi --delimiter='|' --with-nth=3 \
           --prompt='pane> ' \
-          --header='[@]=当前window内  [>]=当前pane  [*]=该window活动pane  [L]=该window被link到多个session（Ctrl-l/Alt-Enter 再按一次会 unlink）' \
+          --header='Tab=标记  Enter/Ctrl-j=join  Ctrl-o=move  Ctrl-l/Alt-Enter=link/unlink  [@]=当前window内  [>]=当前pane  [*]=该window活动pane  [L]=该window被link到多个session' \
           --preview-window="$preview_window" \
-          --expect=ctrl-j,ctrl-l,alt-enter \
+          --bind "enter:print(ACTION|join)+execute-silent(echo {2} > ${(qqq)cursor_file})+accept" \
+          --bind "ctrl-j:print(ACTION|join)+execute-silent(echo {2} > ${(qqq)cursor_file})+accept" \
+          --bind "ctrl-o:print(ACTION|move)+execute-silent(echo {2} > ${(qqq)cursor_file})+accept-non-empty" \
+          --bind "ctrl-l:clear-multi+print(ACTION|link)+execute-silent(echo {2} > ${(qqq)cursor_file})+accept" \
+          --bind "alt-enter:clear-multi+print(ACTION|link)+execute-silent(echo {2} > ${(qqq)cursor_file})+accept" \
           --preview="${script_path} --preview {1} {2}"
-  )" || exit 0
+  )" || fzf_status=$?
+  if (( fzf_status != 0 )); then
+    rm -f -- "$cursor_file" 2>/dev/null || true
+    exit 0
+  fi
 
-  key="${out%%$'\n'*}"
-  chosen="${out#*$'\n'}"
-  [[ "$chosen" != "$out" ]] || chosen=""
-  [[ -n "$chosen" ]] || exit 0
+  local -a lines
+  lines=("${(@f)out}")
+  (( ${#lines} >= 2 )) || { rm -f -- "$cursor_file" 2>/dev/null || true; exit 0 }
+  action_line="${lines[1]}"
 
-  IFS='|' read -r typ id _ <<< "$chosen"
-  [[ "$typ" == "P" && -n "$id" ]] || exit 0
+  local _prefix action
+  IFS='|' read -r _prefix action <<< "$action_line"
+  [[ "$_prefix" == "ACTION" ]] || { rm -f -- "$cursor_file" 2>/dev/null || true; exit 0 }
 
-  local sel_win zoomed split_flag
-  local wlinked
-  IFS='|' read -r sel_win wlinked <<< "$(tmux display-message -p -t "$id" "#{window_id}|#{window_linked}")"
+  local cursor_pid=""
+  if [[ -f "$cursor_file" ]]; then
+    cursor_pid="$(<"$cursor_file" 2>/dev/null || true)"
+    cursor_pid="${cursor_pid//$'\r'/}"
+    cursor_pid="${cursor_pid//$'\n'/}"
+  fi
+  rm -f -- "$cursor_file" 2>/dev/null || true
+  [[ -n "$cursor_pid" ]] || exit 0
 
-  case "$key" in
-    ""|ctrl-j)
-      [[ "$sel_win" == "$dst_win" ]] && exit 0
+  local -a selected_pane_ids
+  local line typ pid
+  for line in "${lines[@]:1}"; do
+    IFS='|' read -r typ pid _ <<< "$line"
+    [[ "$typ" == "P" && -n "${pid:-}" ]] || continue
+    selected_pane_ids+=("$pid")
+  done
+
+  case "$action" in
+    join)
+      # Unzoom destination window once if needed.
+      if [[ "$(tmux display-message -p -t "$dst_pane" "#{window_zoomed_flag}" 2>/dev/null || echo 0)" == "1" ]]; then
+        tmux resize-pane -Z -t "$dst_pane" 2>/dev/null || true
+      fi
+
+      local last_moved=""
+      local -a src_panes
+      src_panes=("$cursor_pid" "${selected_pane_ids[@]}")
+      # fzf 在未多选时 accept 会输出当前行，可能与 cursor 重复；这里去重。
+      src_panes=("${(@u)src_panes}")
+
+      local src src_win join_target split_flag pane_count
+      for src in "${src_panes[@]}"; do
+        src_win="$(tmux display-message -p -t "$src" "#{window_id}" 2>/dev/null || true)"
+        [[ -n "$src_win" ]] || continue
+        [[ "$src_win" == "$dst_win" ]] && continue
+
+        join_target="$(resolve_join_target_pane "$dst_win")"
+        [[ -n "$join_target" ]] || die "failed to resolve join target pane"
+
+        pane_count="$(tmux list-panes -t "$dst_win" -F "#{pane_id}" 2>/dev/null | wc -l | tr -d ' ')"
+        if [[ "$pane_count" =~ '^[0-9]+$' ]] && (( pane_count % 2 == 1 )); then
+          split_flag="-h"
+        else
+          split_flag="-v"
+        fi
+
+        tmux join-pane $split_flag -s "$src" -t "$join_target"
+        last_moved="$src"
+      done
+      [[ -n "$last_moved" ]] && tmux select-pane -t "$last_moved"
       ;;
-    ctrl-l|alt-enter)
+    move)
+      local target_pane="$cursor_pid"
+
+      local target_win
+      target_win="$(tmux display-message -p -t "$target_pane" "#{window_id}" 2>/dev/null || true)"
+      [[ -n "$target_win" ]] || exit 0
+
+      if [[ "$(tmux display-message -p -t "$target_pane" "#{window_zoomed_flag}" 2>/dev/null || echo 0)" == "1" ]]; then
+        tmux resize-pane -Z -t "$target_pane" 2>/dev/null || true
+      fi
+
+      (( ${#selected_pane_ids} > 0 )) || exit 0
+
+      local last_moved=""
+      local src join_target split_flag pane_count
+      for src in "${selected_pane_ids[@]}"; do
+        join_target="$(resolve_join_target_pane "$target_win")"
+        [[ -n "$join_target" ]] || die "failed to resolve join target pane"
+
+        pane_count="$(tmux list-panes -t "$target_win" -F "#{pane_id}" 2>/dev/null | wc -l | tr -d ' ')"
+        if [[ "$pane_count" =~ '^[0-9]+$' ]] && (( pane_count % 2 == 1 )); then
+          split_flag="-h"
+        else
+          split_flag="-v"
+        fi
+
+        tmux move-pane $split_flag -s "$src" -t "$join_target"
+        last_moved="$src"
+      done
+      [[ -n "$last_moved" ]] && tmux select-pane -t "$last_moved"
+      ;;
+    link)
+      local target_pane="$cursor_pid"
+
+      local sel_win wlinked
+      IFS='|' read -r sel_win wlinked <<< "$(tmux display-message -p -t "$target_pane" "#{window_id}|#{window_linked}" 2>/dev/null || echo '|0')"
+      [[ -n "$sel_win" ]] || exit 0
+
       # Toggle link into current session: if already present and window is
       # linked to multiple sessions, unlink it; otherwise link it.
       if tmux list-windows -t "$dst_sess" -F "#{window_id}" 2>/dev/null | grep -Fqx "$sel_win"; then
@@ -147,31 +242,10 @@ inside_popup() {
         tmux link-window -s "$sel_win" -t "$dst_win" -a 2>/dev/null || true
         tmux select-window -t "$sel_win" 2>/dev/null || true
       fi
-      exit 0
       ;;
     *)
-      # Unknown key: default to join behavior.
-      [[ "$sel_win" == "$dst_win" ]] && exit 0
       ;;
   esac
-
-  local join_target
-  join_target="$(resolve_join_target_pane)"
-  [[ -n "$join_target" ]] || die "failed to resolve join target pane"
-
-  zoomed="$(tmux display-message -p -t "$join_target" "#{window_zoomed_flag}")"
-  [[ "$zoomed" == "1" ]] && tmux resize-pane -Z -t "$join_target"
-
-  local pane_count
-  pane_count="$(tmux list-panes -t "$dst_win" -F "#{pane_id}" 2>/dev/null | wc -l | tr -d ' ')"
-  if [[ "$pane_count" =~ '^[0-9]+$' ]] && (( pane_count % 2 == 1 )); then
-    split_flag="-h"
-  else
-    split_flag="-v"
-  fi
-
-  tmux join-pane $split_flag -s "$id" -t "$join_target"
-  tmux select-pane -t "$id"
 }
 
 main() {
