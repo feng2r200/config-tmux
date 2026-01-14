@@ -50,7 +50,9 @@ inside_popup() {
 
   local dst_pane=${TMUX_PANE_PICKER_DST_PANE-}
   local dst_win=${TMUX_PANE_PICKER_DST_WIN-}
+  local dst_sess=${TMUX_PANE_PICKER_DST_SESSION-}
   [[ -n "$dst_pane" && -n "$dst_win" ]] || die "missing TMUX_PANE_PICKER_DST_* env"
+  [[ -n "$dst_sess" ]] || dst_sess="$(tmux display-message -p -t "$dst_pane" "#{session_id}")"
 
   local resolve_join_target_pane
   resolve_join_target_pane() {
@@ -82,12 +84,12 @@ inside_popup() {
     preview_window="${preview_window},nowrap"
   fi
 
-  local chosen typ id _
-  chosen="$(
-    tmux list-panes -a -F "#{pane_id}|#{pane_active}|#{session_name}|#{window_id}|#{window_index}|#{window_name}|#{pane_index}|#{pane_title}|#{pane_current_command}|#{pane_current_path}" \
+  local out key chosen typ id _
+  out="$(
+    tmux list-panes -a -F "#{pane_id}|#{pane_active}|#{session_name}|#{window_id}|#{window_index}|#{window_name}|#{window_linked}|#{pane_index}|#{pane_title}|#{pane_current_command}|#{pane_current_path}" \
       | awk -F '|' -v dst_pane="$dst_pane" -v dst_win="$dst_win" '
           {
-            pid=$1; pactive=$2; sname=$3; wid=$4; widx=$5; wname=$6; pidx=$7; ptitle=$8; pcmd=$9; ppath=$10;
+            pid=$1; pactive=$2; sname=$3; wid=$4; widx=$5; wname=$6; wlinked=$7; pidx=$8; ptitle=$9; pcmd=$10; ppath=$11;
             gsub(/\|/, "¦", sname); gsub(/\|/, "¦", wname); gsub(/\|/, "¦", ptitle); gsub(/\|/, "¦", pcmd); gsub(/\|/, "¦", ppath);
             if (ptitle == "") ptitle = "(no title)"
             if (pcmd == "") pcmd = "?"
@@ -95,8 +97,9 @@ inside_popup() {
             inwin = (wid == dst_win) ? "@" : " "
             here = (pid == dst_pane) ? ">" : " "
             act = (pactive == "1") ? "*" : " "
+            lnk = (wlinked == "1") ? "L" : " "
             rank = (pid == dst_pane) ? 0 : 1
-            display = "[" inwin here act "] " sname " " widx ":" wname " " pidx " " ptitle " · " pcmd " · " ppath
+            display = "[" inwin here act lnk "] " sname " " widx ":" wname " " pidx " " ptitle " · " pcmd " · " ppath
             print rank "|P|" pid "|" display "|" sname "|" widx "|" pidx
           }
         ' \
@@ -104,17 +107,53 @@ inside_popup() {
       | awk -F '|' 'BEGIN { OFS="|" } { print $2, $3, $4 }' \
       | fzf --height=100% --no-multi --delimiter='|' --with-nth=3 \
           --prompt='pane> ' \
-          --header='[@]=当前window内  [>]=当前pane  [*]=该window活动pane' \
+          --header='[@]=当前window内  [>]=当前pane  [*]=该window活动pane  [L]=该window被link到多个session（Ctrl-l/Alt-Enter 再按一次会 unlink）' \
           --preview-window="$preview_window" \
+          --expect=ctrl-j,ctrl-l,alt-enter \
           --preview="${script_path} --preview {1} {2}"
   )" || exit 0
+
+  key="${out%%$'\n'*}"
+  chosen="${out#*$'\n'}"
+  [[ "$chosen" != "$out" ]] || chosen=""
+  [[ -n "$chosen" ]] || exit 0
 
   IFS='|' read -r typ id _ <<< "$chosen"
   [[ "$typ" == "P" && -n "$id" ]] || exit 0
 
   local sel_win zoomed split_flag
-  sel_win="$(tmux display-message -p -t "$id" "#{window_id}")"
-  [[ "$sel_win" == "$dst_win" ]] && exit 0
+  local wlinked
+  IFS='|' read -r sel_win wlinked <<< "$(tmux display-message -p -t "$id" "#{window_id}|#{window_linked}")"
+
+  case "$key" in
+    ""|ctrl-j)
+      [[ "$sel_win" == "$dst_win" ]] && exit 0
+      ;;
+    ctrl-l|alt-enter)
+      # Toggle link into current session: if already present and window is
+      # linked to multiple sessions, unlink it; otherwise link it.
+      if tmux list-windows -t "$dst_sess" -F "#{window_id}" 2>/dev/null | grep -Fqx "$sel_win"; then
+        if [[ "${wlinked:-0}" == "1" ]]; then
+          local sel_idx
+          sel_idx="$(tmux list-windows -t "$dst_sess" -F "#{window_id}|#{window_index}" 2>/dev/null \
+            | awk -F '|' -v id="$sel_win" '$1 == id { print $2; exit }')"
+          if [[ -n "${sel_idx:-}" ]]; then
+            tmux unlink-window -t "${dst_sess}:${sel_idx}" 2>/dev/null || true
+          else
+            tmux unlink-window -t "${dst_sess}:${sel_win}" 2>/dev/null || true
+          fi
+        fi
+      else
+        tmux link-window -s "$sel_win" -t "$dst_win" -a 2>/dev/null || true
+        tmux select-window -t "$sel_win" 2>/dev/null || true
+      fi
+      exit 0
+      ;;
+    *)
+      # Unknown key: default to join behavior.
+      [[ "$sel_win" == "$dst_win" ]] && exit 0
+      ;;
+  esac
 
   local join_target
   join_target="$(resolve_join_target_pane)"
@@ -142,14 +181,17 @@ main() {
     *)
       require_cmd tmux
       local dst_pane dst_win dst_path
+      local dst_sess
       dst_pane="${TMUX_PANE-}"
       [[ -n "$dst_pane" ]] || dst_pane="$(tmux display-message -p "#{pane_id}")"
       dst_win="$(tmux display-message -p -t "$dst_pane" "#{window_id}")"
+      dst_sess="$(tmux display-message -p -t "$dst_pane" "#{session_id}")"
       dst_path="$(tmux display-message -p -t "$dst_pane" "#{pane_current_path}")"
       tmux popup -E -d "$dst_path" -xC -yC -w "${TMUX_PANE_PICKER_WIDTH}" -h "${TMUX_PANE_PICKER_HEIGHT}" \
         -T "pane picker" \
         -e "TMUX_PANE_PICKER_DST_PANE=${dst_pane}" \
         -e "TMUX_PANE_PICKER_DST_WIN=${dst_win}" \
+        -e "TMUX_PANE_PICKER_DST_SESSION=${dst_sess}" \
         -e "TMUX_PANE_PICKER_WIDTH=${TMUX_PANE_PICKER_WIDTH}" \
         -e "TMUX_PANE_PICKER_HEIGHT=${TMUX_PANE_PICKER_HEIGHT}" \
         -e "TMUX_PANE_PICKER_PREVIEW_LINES=${TMUX_PANE_PICKER_PREVIEW_LINES}" \
