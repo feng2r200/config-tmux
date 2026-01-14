@@ -7,7 +7,7 @@ script_path=${0:A}
 
 : "${TMUX_PANE_PICKER_WIDTH:=90%}"
 : "${TMUX_PANE_PICKER_HEIGHT:=80%}"
-: "${TMUX_PANE_PICKER_PREVIEW_LINES:=200}"
+: "${TMUX_PANE_PICKER_PREVIEW_LINES:=30}"
 : "${TMUX_PANE_PICKER_PREVIEW_WINDOW:=}" # 为空则自动选择：默认下方，空间不足用右侧
 : "${TMUX_PANE_PICKER_SPLIT:=h}" # 兼容旧配置；实际 join 方向默认按 pane 数量奇偶自动选择
 
@@ -26,15 +26,20 @@ preview() {
 
   case "$typ" in
     P)
-      tmux display-message -p -t "$id" 'S:#S  W:#I:#W  P:#P  #{pane_title}  (#{pane_current_command})  #{pane_current_path}' 2>/dev/null || true
-      print
-      tmux capture-pane -p -e -t "$id" -S "-${TMUX_PANE_PICKER_PREVIEW_LINES}" 2>/dev/null || true
-      ;;
-    W)
-      tmux list-panes -t "$id" -F '  #%P  #{pane_title}  (#{pane_current_command})' 2>/dev/null || true
-      ;;
-    S)
-      tmux list-windows -t "$id" -F '  [#I] #W  (#{window_panes} panes)' 2>/dev/null || true
+      tmux capture-pane -p -t "$id" -S 0 -E "#{e|-:#{pane_height},1}" 2>/dev/null \
+        | awk -v n="${TMUX_PANE_PICKER_PREVIEW_LINES}" '
+            { lines[NR] = $0 }
+            END {
+              last = 0
+              for (i = NR; i >= 1; i--) {
+                if (lines[i] ~ /[^[:space:]]/) { last = i; break }
+              }
+              if (last == 0) exit 0
+              start = last - n + 1
+              if (start < 1) start = 1
+              for (i = start; i <= last; i++) print lines[i]
+            }
+          ' || true
       ;;
   esac
 }
@@ -68,16 +73,18 @@ inside_popup() {
   if [[ -z "$preview_window" ]]; then
     lines="${LINES:-0}"
     if [[ "$lines" =~ '^[0-9]+$' ]] && (( lines > 0 && lines < 24 )); then
-      preview_window='right,60%,wrap'
+      preview_window='right,70%,nowrap'
     else
-      preview_window='down,40%,wrap'
+      preview_window='down,60%,nowrap'
     fi
+  fi
+  if [[ "$preview_window" != *",wrap"* && "$preview_window" != *",nowrap"* ]]; then
+    preview_window="${preview_window},nowrap"
   fi
 
   local chosen typ id _
   chosen="$(
     tmux list-panes -a -F "#{pane_id}|#{pane_active}|#{session_name}|#{window_id}|#{window_index}|#{window_name}|#{pane_index}|#{pane_title}|#{pane_current_command}|#{pane_current_path}" \
-      | sort -t '|' -k3,3 -k5,5n -k7,7n \
       | awk -F '|' -v dst_pane="$dst_pane" -v dst_win="$dst_win" '
           {
             pid=$1; pactive=$2; sname=$3; wid=$4; widx=$5; wname=$6; pidx=$7; ptitle=$8; pcmd=$9; ppath=$10;
@@ -88,10 +95,14 @@ inside_popup() {
             inwin = (wid == dst_win) ? "@" : " "
             here = (pid == dst_pane) ? ">" : " "
             act = (pactive == "1") ? "*" : " "
-            print "P|" pid "|[" inwin here act "] " sname " " widx ":" wname " " pidx " " ptitle " · " pcmd " · " ppath
+            rank = (pid == dst_pane) ? 0 : 1
+            display = "[" inwin here act "] " sname " " widx ":" wname " " pidx " " ptitle " · " pcmd " · " ppath
+            print rank "|P|" pid "|" display "|" sname "|" widx "|" pidx
           }
         ' \
-      | fzf --no-multi --delimiter='|' --with-nth=3.. \
+      | sort -t '|' -k1,1n -k5,5 -k6,6n -k7,7n \
+      | awk -F '|' 'BEGIN { OFS="|" } { print $2, $3, $4 }' \
+      | fzf --height=100% --no-multi --delimiter='|' --with-nth=3 \
           --prompt='pane> ' \
           --header='[@]=当前window内  [>]=当前pane  [*]=该window活动pane' \
           --preview-window="$preview_window" \
