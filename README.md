@@ -1,131 +1,77 @@
 # config-tmux
 
-## key map
+一套偏“高频操作优先”的 tmux 配置（基于 XDG 路径），包含：
 
-| keytable | key | description |
-| :-- | :-- | :-- |
-| ACTION       | L      | Link window from (session:window) |
-| ACTION       | c      | show tmux config |
-| ACTION       | h      | move pane left |
-| ACTION       | j      | move pane down |
-| ACTION       | k      | move pane up |
-| ACTION       | l      | move pane right |
-| ACTION       | n      | swap window to next |
-| ACTION       | p      | swap window to previous |
-| ACTION       | r      | source config file |
-| ACTION       | t      | session merge to |
-| ACTION       | y      | synchronize panes |
-| copy-mode-vi | C-b    | send-keys -X page-up |
-| copy-mode-vi | C-c    | send-keys -X cancel |
-| copy-mode-vi | C-d    | send-keys -X halfpage-down |
-| copy-mode-vi | C-e    | send-keys -X scroll-down |
-| copy-mode-vi | C-f    | send-keys -X page-down |
-| copy-mode-vi | C-h    | if-shell -F "#{pane_at_left}" '' "select-pane -L" |
-| copy-mode-vi | C-j    | if-shell -F "#{pane_at_bottom}" '' "select-pane -D" |
-| copy-mode-vi | C-k    | if-shell -F "#{pane_at_top}" '' "select-pane -U" |
-| copy-mode-vi | C-l    | if-shell -F "#{pane_at_right}" '' "select-pane -R" |
-| copy-mode-vi | Enter  | send-keys -X copy-pipe-and-cancel |
-| copy-mode-vi | C-u    | send-keys -X halfpage-up |
-| copy-mode-vi | C-v    | send-keys -X rectangle-toggle |
-| copy-mode-vi | C-y    | send-keys -X scroll-up |
-| copy-mode-vi | Escape | send-keys -X cancel |
-| copy-mode-vi | \#     | send-keys -FX search-backward "#{copy_cursor_word}" |
-| copy-mode-vi | \$     | send-keys -X end-of-line |
-| copy-mode-vi | \%     | send-keys -X next-matching-bracket |
-| copy-mode-vi | *      | send-keys -FX search-forward "#{copy_cursor_word}" |
-| copy-mode-vi | ,      | send-keys -X jump-reverse |
-| copy-mode-vi | /      | command-prompt -T search -p "(search down)" { send-keys -X search-forward "%%" } |
-| copy-mode-vi | 0      | send-keys -X start-of-line |
-| copy-mode-vi | 1      | command-prompt -N -I 1 -p (repeat) { send-keys -N "%%" } |
-| copy-mode-vi | 2      | command-prompt -N -I 2 -p (repeat) { send-keys -N "%%" } |
-| copy-mode-vi | 3      | command-prompt -N -I 3 -p (repeat) { send-keys -N "%%" } |
-| copy-mode-vi | 4      | command-prompt -N -I 4 -p (repeat) { send-keys -N "%%" } |
-| copy-mode-vi | 5      | command-prompt -N -I 5 -p (repeat) { send-keys -N "%%" } |
-| copy-mode-vi | 6      | command-prompt -N -I 6 -p (repeat) { send-keys -N "%%" } |
-| copy-mode-vi | 7      | command-prompt -N -I 7 -p (repeat) { send-keys -N "%%" } |
-| copy-mode-vi | 8      | command-prompt -N -I 8 -p (repeat) { send-keys -N "%%" } |
-| copy-mode-vi | 9      | command-prompt -N -I 9 -p (repeat) { send-keys -N "%%" } |
-| copy-mode-vi | :      | command-prompt -p "(goto line)" { send-keys -X goto-line "%%" } |
-| copy-mode-vi | \;     | send-keys -X jump-again |
-| copy-mode-vi | ?      | command-prompt -T search -p "(search up)" { send-keys -X search-backward "%%" } |
-| copy-mode-vi | A      | send-keys -X append-selection-and-cancel |
-| copy-mode-vi | B      | send-keys -X previous-space |
-| copy-mode-vi | D      | send-keys -X copy-pipe-end-of-line-and-cancel |
-| copy-mode-vi | E      | send-keys -X next-space-end |
-| copy-mode-vi | F      | command-prompt -1 -p "(jump backward)" { send-keys -X jump-backward "%%" } |
-| copy-mode-vi | G      | send-keys -X history-bottom |
-| copy-mode-vi | H      | send-keys -X top-line |
-| copy-mode-vi | J      | send-keys -X scroll-down |
-| copy-mode-vi | K      | send-keys -X scroll-up |
-| copy-mode-vi | L      | send-keys -X bottom-line |
-| copy-mode-vi | M      | send-keys -X middle-line |
-| copy-mode-vi | N      | send-keys -X search-reverse |
-| copy-mode-vi | P      | send-keys -X toggle-position |
-| copy-mode-vi | T      | command-prompt -1 -p "(jump to backward)" { send-keys -X jump-to-backward "%%" } |
-| copy-mode-vi | V      | send-keys -X select-line |
-| copy-mode-vi | W      | send-keys -X next-space |
-| copy-mode-vi | X      | send-keys -X set-mark |
-| copy-mode-vi | ^      | send-keys -X back-to-indentation |
-| copy-mode-vi | b      | send-keys -X previous-word |
-| copy-mode-vi | e      | send-keys -X next-word-end |
-| copy-mode-vi | f      | command-prompt -1 -p "(jump forward)" { send-keys -X jump-forward "%%" } |
-| copy-mode-vi | g      | send-keys -X history-top |
-| copy-mode-vi | h      | send-keys -X cursor-left |
-| copy-mode-vi | j      | send-keys -X cursor-down |
-| copy-mode-vi | k      | send-keys -X cursor-up |
-| copy-mode-vi | l      | send-keys -X cursor-right |
-| copy-mode-vi | n      | send-keys -X search-again |
-| copy-mode-vi | o      | send-keys -X other-end |
-| copy-mode-vi | q      | send-keys -X cancel |
-| copy-mode-vi | r      | send-keys -X refresh-from-pane |
-| copy-mode-vi | t      | command-prompt -1 -p "(jump to forward)" { send-keys -X jump-to-forward "%%" } |
-| copy-mode-vi | v      | send-keys -X begin-selection |
-| copy-mode-vi | w      | send-keys -X next-word |
-| copy-mode-vi | y      | send-keys -X copy-selection |
-| copy-mode-vi | \{     | send-keys -X previous-paragraph |
-| copy-mode-vi | \}     | send-keys -X next-paragraph |
-| copy-mode-vi | M-x    | send-keys -X jump-to-mark |
-| copy-mode-vi | C-Up   | send-keys -X scroll-up |
-| copy-mode-vi | C-Down | send-keys -X scroll-down |
-| prefix       | C-a    | send-prefix |
-| prefix       | C-l    | clear-history |
-| prefix       | Space  | next-layout |
-| prefix       | !      | break-pane |
-| prefix       | \$     | rename-session |
-| prefix       | \'     | command-prompt -T window-target -p index { select-window -t ":%%" } |
-| prefix       | (      | switch-client -p |
-| prefix       | )      | switch-client -n |
-| prefix       | ,      | command-prompt -I "#W" { rename-window "%%" } |
-| prefix       | -      | split-window -v -c "#{pane_current_path}" |
-| prefix       | :      | command-prompt |
-| prefix       | \;     | last-pane |
-| prefix       | =      | choose-buffer -Z |
-| prefix       | A      | switch-client -T ACTION |
-| prefix       | L      | switch-client -l |
-| prefix       | M      | select-pane -M |
-| prefix       | Q      | confirm-before -p "kill other windows? (y/n)" "kill-window -a" |
-| prefix       | S      | choose-tree -Zs |
-| prefix       | X      | confirm-before -p "kill-window #W? (y/n)" kill-window |
-| prefix       | [      | copy-mode |
-| prefix       | \\     | split-window -h -c "#{pane_current_path}" |
-| prefix       | ]      | paste-buffer -p |
-| prefix       | c      | new-window |
-| prefix       | d      | detach-client |
-| prefix       | f      | command-prompt { find-window -Z "%%" } |
-| prefix       | g      | fzf 选择 pane 并移动到当前 window（默认 -h 右侧分屏） |
-| prefix       | j      | command-prompt -p "join pane from: " "join-pane -h -s '%%'" |
-| prefix       | l      | last-window |
-| prefix       | m      | select-pane -m |
-| prefix       | n      | next-window |
-| prefix       | p      | previous-window |
-| prefix       | q      | confirm-before -p "kill other panes? (y/n)" "kill-pane -a" |
-| prefix       | s      | choose-tree -Zw |
-| prefix       | t      | show pop session |
-| prefix       | x      | confirm-before -p "kill-pane #P? (y/n)" kill-pane |
-| prefix       | z      | resize-pane -Z |
-| prefix       | \{     | swap-pane -U |
-| prefix       | \}     | swap-pane -D |
-| root         | C-h    | move to left pane (even if vim or tmux) |
-| root         | C-j    | move to down pane (even if vim or tmux) |
-| root         | C-k    | move to up pane (even if vim or tmux) |
-| root         | C-l    | move to right pane (even if vim or tmux) |
+- `C-a` 作为 prefix（替代默认 `C-b`）
+- 方向键/分屏/清屏等常用键位重映射
+- `fzf` 弹窗 pane picker：跨 session/跨 window 合并、移动 pane，以及 window link/unlink
+- 简单的 `ACTION` key table（用于少量“动作型”操作）
+
+本仓库默认按 `tmux.conf` 入口加载 `conf/*.tmux`。
+
+## 依赖
+
+- `tmux`（本配置在 `tmux 3.6a` 下验证过）
+- `fzf`（pane picker 需要）
+- `zsh`（`conf/scripts/pane-tree-fzf.sh`）
+- `bash`（`conf/scripts/popuptmux.sh`）
+
+## 安装
+
+将本仓库放到 `$XDG_CONFIG_HOME/tmux`（常见是 `~/.config/tmux`），确保入口文件为：
+
+- `tmux.conf`（会 `source-file` 加载 `conf/base.tmux`、`conf/style.tmux`、`conf/unbind.tmux`、`conf/bind.tmux`）
+
+## 快捷键（核心）
+
+说明：以下 `prefix` 默认为 `C-a`。
+
+- `prefix C-a`：发送 prefix（相当于原生 `C-b`）
+- `prefix C-l`：清屏并 `clear-history`
+- `prefix v`：左右分屏（在当前路径）
+- `prefix s`：上下分屏（在当前路径）
+- `C-h/j/k/l`：在 pane 间移动（若当前 pane 在跑 `vim/nvim` 则把按键交给 vim）
+- `C-Up/Down/Left/Right`：调整 pane 大小（同样会避开 vim/nvim）
+- `prefix j` / `prefix k`：下一个/上一个 window
+- `prefix ;`：上一个 window（last-window）
+- `prefix h` / `prefix l`：上一个/下一个 session（switch-client -p/-n）
+- `prefix q`：确认后 kill 其它 panes（保留当前）
+- `prefix X`：确认后 kill 当前 window
+- `prefix Q`：确认后 kill 其它 windows（保留当前）
+- `prefix t` / `prefix -`：打开/关闭一个名为 `popup` 的临时 session（popup 模式）
+- `prefix g`：打开 pane picker（fzf 弹窗）
+
+## ACTION（key table）
+
+进入：`prefix A`
+
+- `<` / `>`：与前/后一个 window 交换位置（执行后仍停留在 `ACTION`）
+- `y`：切换 `synchronize-panes` 并提示状态
+- `r`：重载配置（`source-file "$XDG_CONFIG_HOME/tmux/tmux.conf"`）
+- `c`：进入 `customize-mode -Z`
+
+状态栏会显示当前 key table（例如 `ACTION`）。
+
+## Pane Picker（`prefix g`）
+
+文件：`conf/scripts/pane-tree-fzf.sh`
+
+- `Enter` / `Ctrl-j`：把“光标所在 pane”加入当前 window；若同时 `Tab` 标记了更多 panes，会一起 join
+- `Tab`：多选标记 panes
+- `Ctrl-o`：把“已标记 panes”移动到“光标所在 pane 的 window”（用于快速把一组 panes 聚合到同一个 window）
+- `Ctrl-l` / `Alt-Enter`：对“光标所在 window”做 link/unlink 切换（是否链接到当前 session）
+
+可选环境变量：
+
+- `TMUX_PANE_PICKER_WIDTH` / `TMUX_PANE_PICKER_HEIGHT`
+- `TMUX_PANE_PICKER_PREVIEW_LINES`
+- `TMUX_PANE_PICKER_PREVIEW_WINDOW`（为空时自动选择 preview 位置）
+
+## copy-mode-vi
+
+文件：`conf/copymodevi.tmux`
+
+- `v` 开始选择，`y` 复制，`Esc` 取消
+- `C-h/j/k/l`：在 copy-mode 里也能切换 pane
+- `M-h/j/k/l`：在 copy-mode 里微调 pane 大小
+
