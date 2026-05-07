@@ -1,86 +1,93 @@
-#--------------------------------------------------------------#
-##          UnBind                                            ##
-#--------------------------------------------------------------#
-unbind-key -T prefix /   # command-prompt -k -p key { list-keys -1N "%%" }
-unbind-key -T prefix ?   # list-keys -N
+# ================================================
+# Unbind - 清理默认按键
+# ================================================
 
+# ==================== Prefix 键清理 ====================
+unbind-key -T prefix C-b # 原默认 prefix
+unbind-key -T prefix /   # list-keys
+unbind-key -T prefix ?   # list-keys
 unbind-key -T prefix q   # display-panes
-
 unbind-key -T prefix C-o # rotate-window
 unbind-key -T prefix C-z # suspend-client
 unbind-key -T prefix \#  # list-buffers
-unbind-key -T prefix .   # command-prompt -T target { move-window -t "%%" }
+unbind-key -T prefix .   # move-window
 unbind-key -T prefix DC
 unbind-key -T prefix PPage
+
+# 默认分割窗口
+unbind-key -T prefix -
+unbind-key -T prefix \\
+unbind-key -T prefix '"'
+unbind-key -T prefix %
+
+# 默认窗口切换
+unbind-key -T prefix n
+unbind-key -T prefix p
+unbind-key -T prefix 0
+unbind-key -T prefix 1
+unbind-key -T prefix 2
+unbind-key -T prefix 3
+unbind-key -T prefix 4
+unbind-key -T prefix 5
+unbind-key -T prefix 6
+unbind-key -T prefix 7
+unbind-key -T prefix 8
+unbind-key -T prefix 9
+
+unbind-key -T prefix M-6
+unbind-key -T prefix M-7
+
+# 默认窗口/会话操作
+unbind-key -T prefix &        # kill-window
+unbind-key -T prefix f        # find-window
+unbind-key -T prefix C        # customize-mode
+unbind-key -T prefix D        # choose-client
+unbind-key -T prefix E        # select-layout
+unbind-key -T prefix i        # display-message
+unbind-key -T prefix o        # select-pane
+unbind-key -T prefix r        # refresh-client
+unbind-key -T prefix \$       # rename-session
+unbind-key -T prefix ,        # rename-window
+
+# 默认窗格导航和调整
+unbind-key -T prefix Up
+unbind-key -T prefix Down
+unbind-key -T prefix Left
+unbind-key -T prefix Right
+unbind-key -T prefix M-Up
+unbind-key -T prefix M-Down
+unbind-key -T prefix M-Left
+unbind-key -T prefix M-Right
+unbind-key -T prefix C-Up
+unbind-key -T prefix C-Down
+unbind-key -T prefix C-Left
+unbind-key -T prefix C-Right
+unbind-key -T prefix S-Up
+unbind-key -T prefix S-Down
+unbind-key -T prefix S-Left
+unbind-key -T prefix S-Right
+
+# 其他不常用键
+unbind-key -T prefix m # select-pane -m
+unbind-key -T prefix M # select-pane -M
 unbind-key -T prefix <
 unbind-key -T prefix >
-
-unbind-key -T prefix -   # split-window -v -c "#{pane_current_path}"
-unbind-key -T prefix \\  # split-window -h -c "#{pane_current_path}"
-unbind-key -T prefix 0   # select-window -t :=0
-unbind-key -T prefix 1   # select-window -t :=1
-unbind-key -T prefix 2   # select-window -t :=2
-unbind-key -T prefix 3   # select-window -t :=3
-unbind-key -T prefix 4   # select-window -t :=4
-unbind-key -T prefix 5   # select-window -t :=5
-unbind-key -T prefix 6   # select-window -t :=6
-unbind-key -T prefix 7   # select-window -t :=7
-unbind-key -T prefix 8   # select-window -t :=8
-unbind-key -T prefix 9   # select-window -t :=9
-
-unbind-key -T prefix & # confirm-before -p "kill-window #W? (y/n)" kill-window
-unbind-key -T prefix f # command-prompt { find-window -Z "%%" }
-unbind-key -T prefix C # customize-mode -Z
-unbind-key -T prefix D # choose-client -Z
-unbind-key -T prefix E # select-layout -E
-unbind-key -T prefix M # select-pane -M
-unbind-key -T prefix i # display-message
-unbind-key -T prefix m # select-pane -m
-unbind-key -T prefix o # select-pane -t :.+
-unbind-key -T prefix r # refresh-client
-unbind-key -T prefix n # next-window
-unbind-key -T prefix p # previous-window
 unbind-key -T prefix ( # switch-client -p
 unbind-key -T prefix ) # switch-client -n
-
-unbind-key -T prefix \$ # command-prompt -I "#S" { rename-session "%%" }
-unbind-key -T prefix ,  # command-prompt -I "#W" { rename-window "%%" }
 
 unbind-key -T prefix M-1
 unbind-key -T prefix M-2
 unbind-key -T prefix M-3
 unbind-key -T prefix M-4
 unbind-key -T prefix M-5
+unbind-key -T prefix M-n
+unbind-key -T prefix M-o
+unbind-key -T prefix M-p
+unbind-key -T prefix M-MouseDown3Pane
+unbind-key -T prefix \~
 
-unbind-key -T prefix S-Up     # refresh-client -U 10
-unbind-key -T prefix S-Down   # refresh-client -D 10
-unbind-key -T prefix S-Left   # refresh-client -L 10
-unbind-key -T prefix S-Right  # refresh-client -R 10
-
-unbind-key -T prefix Up       # select-pane -U
-unbind-key -T prefix Down     # select-pane -D
-unbind-key -T prefix Left     # select-pane -L
-unbind-key -T prefix Right    # select-pane -R
-
-unbind-key -T prefix \~       # show-messages
-
-unbind-key -T prefix M-n      # next-window -a
-unbind-key -T prefix M-o      # rotate-window -D
-unbind-key -T prefix M-p      # previous-window -a
-unbind-key -T prefix M-Up     # resize-pane -U 5
-unbind-key -T prefix M-Down   # resize-pane -D 5
-unbind-key -T prefix M-Left   # resize-pane -L 5
-unbind-key -T prefix M-Right  # resize-pane -R 5
-unbind-key -T prefix C-Up     # resize-pane -U
-unbind-key -T prefix C-Down   # resize-pane -D
-unbind-key -T prefix C-Left   # resize-pane -L
-unbind-key -T prefix C-Right  # resize-pane -R
-
-unbind-key -T root M-MouseDown3Pane
-
-unbind-key '"'
-unbind-key %
-
+# ==================== Copy Mode 清理 ====================
+unbind-key -T copy-mode-vi Space
 unbind-key -T copy-mode C-Space
 unbind-key -T copy-mode C-a
 unbind-key -T copy-mode C-b
@@ -146,5 +153,3 @@ unbind-key -T copy-mode M-Up
 unbind-key -T copy-mode M-Down
 unbind-key -T copy-mode C-Up
 unbind-key -T copy-mode C-Down
-
-unbind-key -T copy-mode-vi Space # begin-selection
