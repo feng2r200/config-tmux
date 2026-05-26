@@ -12,6 +12,7 @@ set -ga terminal-features ",xterm-256color:RGB"
 
 # 图片协议 / OSC 支持（chafa、OSC-52 剪贴板必须）
 set -gq allow-passthrough on
+set -s input-buffer-size 5242880
 
 # ==================== 性能 & 响应速度 ====================
 set -s escape-time 0
