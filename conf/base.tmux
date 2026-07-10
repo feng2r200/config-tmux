@@ -99,6 +99,3 @@ set -g @continuum-save-interval '20'              # 分钟
 
 # 启动时不立即恢复
 set -g @continuum-boot 'off'
-
-# ==================== 初始化 tpack ====================
-run 'tpack'
