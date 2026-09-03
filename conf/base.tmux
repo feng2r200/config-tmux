@@ -35,6 +35,7 @@ set -g mouse on
 setw -g xterm-keys on
 set -g status-keys emacs
 set -g mode-keys vi
+set -g extended-keys on
 
 # ==================== 显示 & 视觉 ====================
 set -g display-panes-time 800
