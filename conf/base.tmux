@@ -36,6 +36,7 @@ setw -g xterm-keys on
 set -g status-keys emacs
 set -g mode-keys vi
 set -g extended-keys on
+set -g extended-keys-format csi-u
 
 # ==================== 显示 & 视觉 ====================
 set -g display-panes-time 800
